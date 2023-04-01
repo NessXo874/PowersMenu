@@ -1,7 +1,7 @@
 SuperPouvoir = {
-    'license:7d1a5394cad06e1a7623a8be7aa90ec6110876d6' --- Ness
-    --'ip:127.0.0.1'
- }
+    'license:EXAMPLE', -- EXAMPLE NAME
+    'license:EXAMPLE2' -- EXAMPLE NAME 2
+}
  
  
  function perms(player)
