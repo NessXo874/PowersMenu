@@ -72,8 +72,8 @@ lib.registerContext({
 				description = 'Forces'
 			},
 			{
-                title = 'Super strenght',
-                description = 'Enable super strenght',
+                title = 'Super strength',
+                description = 'Enable super strength',
 				menu = 'ss',
 				icon = 'hand'
             },
