@@ -30,14 +30,14 @@ like set the powers to players around
 - Download the resource
 - Drop it into your server
 - Add these lines into your server.cfg or resources.cfg :
-  ensure ox_lib
-  ensure PowersMenu
+  - ensure ox_lib
+  - ensure PowersMenu
   
 # PERMISSIONS
 
 For let or not someone access to the panel : 
   
-  - PowersMenu folder
+  - Go to PowersMenu folder
   - Access server.lua
 if you want to add someone, add a line and don't forget the ","
 for delete someone just delete a line and the ","
