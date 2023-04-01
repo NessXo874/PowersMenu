@@ -38,12 +38,12 @@ lib.registerContext({
             title = 'Weapons',
             menu = 'w',
             description = 'Powers that affect your weapons'
-        },
+        }--[[,
 		{
             title = 'Settings',
             menu = 's',
             description = 'Menu settings'
-        }
+        }]] -- don't have any functions for now
     },
     -- Self
     {
