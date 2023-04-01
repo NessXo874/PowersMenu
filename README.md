@@ -33,7 +33,7 @@ like set the powers to players around
 - Drop it into your server
 - Add these lines into your server.cfg or resources.cfg :
   - ensure ox_lib
-  - ensure PowersMenu
+  - ensure PowersMenu-FiveM
   
 # PERMISSIONS
 
