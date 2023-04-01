@@ -39,9 +39,9 @@ For let or not someone access to the panel :
   
   - Go to PowersMenu folder
   - Access server.lua
-if you want to add someone, add a line and don't forget the ","
-for delete someone just delete a line and the ","
-Replace 'license:EXAMPLE' by 'your fivem license'
-The last id can't have a ","
+    - if you want to add someone, add a line and don't forget the ","
+    - for delete someone just delete a line and the ","
+    - Replace 'license:EXAMPLE' by 'your fivem license'
+    - The last id can't have a ","
 
 # HAVE MAXIMUM OF FUN GUYS !
