@@ -16,6 +16,8 @@ A fantastic panel that allow you to have super powers (permission system)
 - Heat vision
 - Opacity
 - Fly
+- Permissions
+- Key binds
 
 ( MORE OPTIONS ARE COMING )
 
@@ -38,7 +40,7 @@ like set the powers to players around
 For let or not someone access to the panel : 
   
   - Go to PowersMenu folder
-  - Access server.lua
+  - Access server.lua and modify SuperPouvoir table ( line 1 )
     - if you want to add someone, add a line and don't forget the ","
     - for delete someone just delete a line and the ","
     - Replace 'license:EXAMPLE' by 'your fivem license'
