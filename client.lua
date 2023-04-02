@@ -1,4 +1,5 @@
 
+
 -- 
 
 Player = PlayerPedId()
@@ -38,12 +39,12 @@ lib.registerContext({
             title = 'Weapons',
             menu = 'w',
             description = 'Powers that affect your weapons'
-        }--[[,
+        },
 		{
             title = 'Settings',
             menu = 's',
             description = 'Menu settings'
-        }]] -- don't have any functions for now
+        }
     },
     -- Self
     {
@@ -249,7 +250,7 @@ lib.registerContext({
 			{
 				title = 'Fly',
 				description = 'Enable the fly ability',
-				event = 'PowersMenu:FLY',
+				event = 'PowersMenu:FLYC',
 				icon = 'plane'
 			}
     	},
@@ -306,43 +307,37 @@ lib.registerContext({
 				title = '100 %',
 				description = 'Set the default opacity',
 				icon = 'user',
-				event = 'PowersMenu:OP100',
-				args = { percent = 100 }
+				event = 'PowersMenu:OP100'
 			},
 			{
 				title = '80 %',
 				description = 'Set the default opacity',
 				icon = 'user',
-				event = 'PowersMenu:OP80',
-				args = { percent = 80 }
+				event = 'PowersMenu:OP80'
 			},
 			{
 				title = '60 %',
 				description = 'Set the default opacity',
 				icon = 'user',
-				event = 'PowersMenu:OP60',
-				args = { percent = 60 }
+				event = 'PowersMenu:OP60'
 			},
 			{
 				title = '40 %',
 				description = 'Set the default opacity',
 				icon = 'user',
-				event = 'PowersMenu:OP40',
-				args = { percent = 40 }
+				event = 'PowersMenu:OP40'
 			},
 			{
 				title = '20 %',
 				description = 'Set the default opacity',
 				icon = 'user',
-				event = 'PowersMenu:OP20',
-				args = { percent = 20 }
+				event = 'PowersMenu:OP20'
 			},
 			{
 				title = '0 %',
 				description = 'Set the default opacity',
 				icon = 'user',
-				event = 'PowersMenu:OP',
-				args = { percent = 0 }
+				event = 'PowersMenu:OP'
 			}
     	},
 	}
@@ -364,6 +359,20 @@ end
 function TaskCancel(time)
 	Citizen.Wait(time)
 	ClearPedTasksImmediately(Player)
+end
+
+function StartParticle(dict, particle, bone, xOff, yOff, zOff, xRot, yRot, zRot)
+	-- Request the particle dictionary.
+	RequestNamedPtfxAsset(dict)
+	-- Wait for the particle dictionary to load.
+	while not HasNamedPtfxAssetLoaded(dict) do
+		Citizen.Wait(0)
+	end
+	-- Tell the game that we want to use a specific dictionary for the next particle native.
+	UseParticleFxAssetNextCall(dict)
+	-- Create a new non-looped particle effect, we don't need to store the particle handle because it will
+	-- automatically get destroyed once the particle has finished it's animation (it's non-looped).
+	return StartParticleFxLoopedOnEntityBone(particle, Player, xOff, yOff, zOff, xRot, yRot, zRot, bone, 3.0, false, false, false)
 end
 
 -- Events
@@ -445,6 +454,11 @@ AddEventHandler('PowersMenu:checkCL', function(perm)
 	else
 		permCL = false
 	end
+end)
+
+RegisterNetEvent('PowersMenu:FLYC')
+AddEventHandler('PowersMenu:FLYC', function()
+	ExecuteCommand('pwFLY')
 end)
 
 RegisterCommand("powers2", function(source, args, rawCommand)
@@ -686,7 +700,6 @@ AddEventHandler('PowersMenu:FLY', function()
 	if fly then
 		fly = false
 		lib.hideTextUI()
-		RemoveWeaponFromPed(Player, 'gadget_parachute')
 		SetEntityCoords(Player, GetEntityCoords(Player), 0.0, 0.0, 0.0, false)
 		FreezeEntityPosition(Player, false)
 		DisableControlAction(0, 32, true)
@@ -700,48 +713,33 @@ end)
 
 RegisterNetEvent('PowersMenu:OP')
 AddEventHandler('PowersMenu:OP', function()
-	SetEntityAlpha(Player, 0, true)
-	print('e')
+	SetEntityAlpha(Player, 0.0)
 end)
 
 RegisterNetEvent('PowersMenu:OP20')
-AddEventHandler('PowersMenu:OP', function()
-	SetEntityAlpha(Player, 51, true)
+AddEventHandler('PowersMenu:OP20', function()
+	SetEntityAlpha(Player, 51)
 end)
 
 RegisterNetEvent('PowersMenu:OP40')
-AddEventHandler('PowersMenu:OP', function()
-	SetEntityAlpha(Player, 102, true)
+AddEventHandler('PowersMenu:OP40', function()
+	SetEntityAlpha(Player, 102)
 end)
 
 RegisterNetEvent('PowersMenu:OP60')
-AddEventHandler('PowersMenu:OP', function()
-	SetEntityAlpha(Player, 153, true)
+AddEventHandler('PowersMenu:OP60', function()
+	SetEntityAlpha(Player, 153)
 end)
 
 RegisterNetEvent('PowersMenu:OP80')
-AddEventHandler('PowersMenu:OP', function()
-	SetEntityAlpha(Player, 204, true)
+AddEventHandler('PowersMenu:OP80', function()
+	SetEntityAlpha(Player, 204)
 end)
 
 RegisterNetEvent('PowersMenu:OP100')
-AddEventHandler('PowersMenu:OP', function()
+AddEventHandler('PowersMenu:OP100', function()
 	ResetEntityAlpha(Player)
 end)
-
-function StartParticle(dict, particle, bone, xOff, yOff, zOff, xRot, yRot, zRot)
-	-- Request the particle dictionary.
-	RequestNamedPtfxAsset(dict)
-	-- Wait for the particle dictionary to load.
-	while not HasNamedPtfxAssetLoaded(dict) do
-		Citizen.Wait(0)
-	end
-	-- Tell the game that we want to use a specific dictionary for the next particle native.
-	UseParticleFxAssetNextCall(dict)
-	-- Create a new non-looped particle effect, we don't need to store the particle handle because it will
-	-- automatically get destroyed once the particle has finished it's animation (it's non-looped).
-	return StartParticleFxLoopedOnEntityBone(particle, Player, xOff, yOff, zOff, xRot, yRot, zRot, bone, 3.0, false, false, false)
-end
 
 -- Threads
 
@@ -893,13 +891,6 @@ Citizen.CreateThread(function()
 		else
 		end
 	end
-end)
-
--- test
-
-RegisterCommand("giveweapon", function(source, args, rawCommand)
-    local weaponHash = GetHashKey(args[1])
-    GiveWeaponToPed(Player, weaponHash, 9999, false, true)
 end)
 
 -- force 
