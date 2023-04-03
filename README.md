@@ -37,7 +37,7 @@ like set the powers to players around
   
 # PERMISSIONS
 
-For let or not someone access to the panel : 
+For let or for not let someone access to the panel : 
   
   - Go to PowersMenu folder
   - Access server.lua and modify SuperPouvoir table ( line 1 )
