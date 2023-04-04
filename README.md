@@ -16,6 +16,8 @@ A fantastic panel that allow you to have super powers (permission system)
 - Heat vision
 - Opacity
 - Fly
+- Particles system
+- Settings
 - Permissions
 - Key binds
 
