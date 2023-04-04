@@ -1,5 +1,4 @@
 
-
 -- 
 
 Player = PlayerPedId()
@@ -19,9 +18,12 @@ isSkyfall = false
 skyfall = false
 FollowCamMode = false
 FlyS = 5
+FlySF = 20
+FlySL = 5
 FlyMode = 'land'
 Pcap = 5
 permCL = false
+IpA = false
 
 -- Menu
 
@@ -40,6 +42,16 @@ lib.registerContext({
             menu = 'w',
             description = 'Powers that affect your weapons'
         },
+		{
+            title = 'Particles',
+            menu = 'pa',
+            description = 'Start particle effects'
+        },
+		--[[{
+            title = 'Multiplayer',
+            menu = 'mu',
+            description = 'Powers that can be set to others players'
+        },]] -- not tested so don't active this !
 		{
             title = 'Settings',
             menu = 's',
@@ -176,10 +188,16 @@ lib.registerContext({
 		menu = 'pw',
     	options = {
         	{
-                title = 'Explosive bullets',
-                description = 'Set your bullets explosive',
+                title = 'Fly speed ( land )',
+                description = 'Change fly speed',
                 arrow = false,
-                event = 'PowersMenu:ExplB'
+                event = 'PowersMenu:FlySpL'
+			},
+			{
+                title = 'Fly speed ( fast )',
+                description = 'Change fly speed',
+                arrow = false,
+                event = 'PowersMenu:FlySpF'
 			}
     	},
 	},
@@ -340,12 +358,41 @@ lib.registerContext({
 				event = 'PowersMenu:OP'
 			}
     	},
-	}
+	},
+	{
+		id = 'pa',
+    	title = 'Particles',
+		menu = 'pw',
+    	options = {
+        	{
+                title = 'Fire trail',
+                description = 'Start fire trail',
+                arrow = false,
+                event = 'PowersMenu:FiTr'
+			}
+    	},
+	},
+	--[[{
+		id = 'mu',
+    	title = 'Multiplayer',
+		menu = 'pw',
+    	options = {
+        	{
+                title = 'Invincibility',
+                description = 'Set invincibility to the closest player',
+                arrow = false,
+                event = 'PowersMenu:InvM'
+			},
+			{
+                title = 'No ragdoll',
+                description = 'Set no ragdoll to the closest player',
+                arrow = false,
+				icon = 'universal-access',
+                event = 'PowersMenu:SetNRm'
+            }
+    	},
+	},]] -- not tested
 })
-
-RegisterCommand('unfreeze', function(source, args)
-	FreezeEntityPosition(PlayerPedId(), false)
-end)
 
 -- function
 
@@ -373,6 +420,10 @@ function StartParticle(dict, particle, bone, xOff, yOff, zOff, xRot, yRot, zRot)
 	-- Create a new non-looped particle effect, we don't need to store the particle handle because it will
 	-- automatically get destroyed once the particle has finished it's animation (it's non-looped).
 	return StartParticleFxLoopedOnEntityBone(particle, Player, xOff, yOff, zOff, xRot, yRot, zRot, bone, 3.0, false, false, false)
+end
+
+function GetCP(c, m, i)
+	return lib.getClosestPlayer(c, m, i)
 end
 
 -- Events
@@ -415,6 +466,34 @@ AddEventHandler('PowersMenu:SetNR', function()
             type = 'error'
         })
     end
+end)
+
+RegisterNetEvent('PowersMenu:SetNRm')
+AddEventHandler('PowersMenu:SetNRm', function()
+	local cloP = GetCP()
+	if cloP then
+		if CanPedRagdoll(cloP) then
+			SetPedCanRagdoll(cloP, false)
+			lib.notify({
+				title = 'no ragdoll activated',
+				description = 'success',
+				type = 'success'
+			})
+		else
+			SetPedCanRagdoll(cloP, true)
+			lib.notify({
+				title = 'no ragdoll disabled',
+				description = 'success',
+				type = 'error'
+			})
+		end
+	else
+		lib.notify({
+			title = 'there s nobody around you',
+			description = 'error',
+			type = 'error'
+		})
+	end
 end)
 
 RegisterNetEvent('PowersMenu:StartForce')
@@ -608,7 +687,6 @@ end)
 
 RegisterNetEvent("PowersMenu:SuS")
 AddEventHandler("PowersMenu:SuS", function()
-
 	if SuS then
 		SuS = false
 		TriggerEvent("PowersMenu:SuSd")
@@ -741,12 +819,129 @@ AddEventHandler('PowersMenu:OP100', function()
 	ResetEntityAlpha(Player)
 end)
 
+RegisterNetEvent('PowersMenu:FiTr')
+AddEventHandler('PowersMenu:FiTr', function()
+	if IpA == false then
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0x322c, "ent_amb_torch_fire", true, false)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0x49d9,"ent_amb_torch_fire", true, true)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0x188e, "ent_amb_torch_fire", true, false, false, false, false, false, false, true)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0xf9bb, "ent_amb_torch_fire", true, false)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0x9000, "ent_amb_torch_fire", true, false)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0xe175,"ent_amb_torch_fire", true, false, true)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0x60e6,"ent_amb_torch_fire", true, false, true)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0x49d9,"ent_amb_torch_fire", true, false, false, false, true)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0x188e,"ent_amb_torch_fire", true, false, false, true)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0x62ac, "ent_amb_torch_fire", true, false, false, false, false, true)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0x6b52, "ent_amb_torch_fire", true, false, false, false, false, true)
+		IpA = true
+	elseif IpA == true then
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0x322c, "ent_amb_torch_fire", false, false)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0x49d9,"ent_amb_torch_fire", false, true)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0x188e, "ent_amb_torch_fire", false, false, false, false, false, false, false, true)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0xf9bb, "ent_amb_torch_fire", false, false)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0x9000, "ent_amb_torch_fire", false, false)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0xe175,"ent_amb_torch_fire", false, false, true)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0x60e6,"ent_amb_torch_fire", false, false, true)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0x49d9,"ent_amb_torch_fire", false, false, false, false, true)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0x188e,"ent_amb_torch_fire", false, false, false, true)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0x62ac, "ent_amb_torch_fire", false, false, false, false, false, true)
+		TriggerServerEvent("Pw:smoke", PedToNet(Player), 0x6b52, "ent_amb_torch_fire", false, false, false, false, false, true)
+		IpA = false
+	end
+end)
+
+RegisterNetEvent('PowersMenu:InvM')
+AddEventHandler('PowersMenu:InvM', function()
+	local cloP = GetCP()
+	if cloP == nil then
+		lib.notify({
+            title = 'Error',
+            description = 'There s nobody next to you !',
+            type = 'error'
+        })
+	else
+		if GetEntityCanBeDamaged(cloP) then
+			SetEntityCanBeDamaged(cloP, false)
+			SetEntityProofs(cloP, true, true, true, true, true, true, 1, true)
+			lib.notify({
+				title = 'Invincibility activated',
+				description = 'success',
+				type = 'success'
+			})
+		else
+			SetEntityCanBeDamaged(Player, true)
+			SetEntityProofs(Player, false, false, false, false, false, false, 1, false)
+			lib.notify({
+				title = 'Invincibility disabled',
+				description = 'success',
+				type = 'error'
+			})
+		end
+	end
+end)
+
+RegisterNetEvent('PowersMenu:FlySpF')
+AddEventHandler('PowersMenu:FlySpF', function()
+	local input = lib.inputDialog('Speed', {'From 0.1 to 100 ( default : 20 )'})
+	if not input then return end
+	FlySF = input[1]
+end)
+
+RegisterNetEvent('PowersMenu:FlySpL')
+AddEventHandler('PowersMenu:FlySpL', function()
+	local input = lib.inputDialog('Speed', {'From 0.1 to 100 ( default : 5 )'})
+	if not input then return end
+	FlySL = input[1]
+end)
+
+p_smoke_particle_asset = "core" 
+RegisterNetEvent("Pw:c_smoke")
+AddEventHandler("Pw:c_smoke", function(c_ped, location, particle, state, main, pied, bras, brasg, oeil, crane, maind)
+	--SetEntityInvincible(NetToPed(c_ped), false)
+	--StartEntityFire(NetToPed(c_ped))
+	--SetEntityInvincible(NetToPed(c_ped), true)
+	if state then
+		if DoesEntityExist(NetToPed(c_ped)) and not IsEntityDead(NetToPed(c_ped)) then
+			createdSmoke = UseParticleFxAssetNextCall(p_smoke_particle_asset)
+			if main then
+				createdPart = StartParticleFxLoopedOnEntityBone(particle, NetToPed(c_ped), 0.13, 0.0, 0.0, 0.0, 0.0, 0.0, GetPedBoneIndex(NetToPed(c_ped), location), 0.2, 0.0, 0.0, 0.0)
+			elseif maind then
+				createdPart = StartParticleFxLoopedOnEntityBone(particle, NetToPed(c_ped), 0.05, 0.0, 0.0, 0.0, 0.0, 0.0, GetPedBoneIndex(NetToPed(c_ped), location), 0.2, 0.0, 0.0, 0.0)
+			elseif pied then
+				createdPart = StartParticleFxLoopedOnEntityBone(particle, NetToPed(c_ped), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, GetPedBoneIndex(NetToPed(c_ped), location), 0.35, 0.0, 0.0, 0.0)
+			elseif bras then
+				createdPart = StartParticleFxLoopedOnEntityBone(particle, NetToPed(c_ped), -0.2, 0.0, 0.0, 0.0, 0.0, 0.0, GetPedBoneIndex(NetToPed(c_ped), location), 0.4, 0.0, 0.0, 0.0)
+			elseif oeil then
+				createdPart = StartParticleFxLoopedOnEntityBone(particle, NetToPed(c_ped), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, GetPedBoneIndex(NetToPed(c_ped), location), 0.1, 0.0, 0.0, 0.0)
+			elseif crane then
+				createdPart = StartParticleFxLoopedOnEntityBone(particle, NetToPed(c_ped), -0.2, 0.14, -0.16, 0.0, 0.0, 0.0, GetPedBoneIndex(NetToPed(c_ped), location),0.4, 0.0, 0.0, 0.0)
+			elseif brasg then
+				createdPart = StartParticleFxLoopedOnEntityBone(particle, NetToPed(c_ped), -0.1, 0.0, 0.0, 0.0, 0.0, 0.0, GetPedBoneIndex(NetToPed(c_ped), location), 0.4, 0.0, 0.0, 0.0)
+			else
+				createdPart = StartParticleFxLoopedOnEntityBone(particle, NetToPed(c_ped), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, GetPedBoneIndex(NetToPed(c_ped), location), 0.5, 0.0, 0.0, 0.0)
+			end
+		end
+	else
+		RemoveParticleFxFromEntity(NetToPed(c_ped))
+--	if DoesParticleFxLoopedExist(createdPart) then 
+--		RemoveParticleFx(createdPart, true)
+--	 endcc
+	end
+end)
+
 -- Threads
 
 Citizen.CreateThread(function()
 	while true do
 		if fly then
 			lib.showTextUI('Mode : '..FlyMode)
+			--[[lib.showTextUI('Speed : '..FlyS, {
+				position = "top-center"
+				style = {
+					borderRadius = 0
+					color = 'white'
+				}
+			})]]
 			DisableAllControlActions()
             EnableControlAction(0, 1, true)
             EnableControlAction(0, 2, true)
@@ -765,10 +960,10 @@ Citizen.CreateThread(function()
 			end
 			if FlyMode == 'land' then
 				SetEntityRotation(Player, GetGameplayCamRot(2).x, GetGameplayCamRot(2).y, GetGameplayCamRot(2).z, 0, false)
-				FlyS = 5
+				FlyS = FlySL
 			elseif FlyMode == 'fast' then
 				SetEntityRotation(Player, GetGameplayCamRot(2).x, GetGameplayCamRot(2).y, GetGameplayCamRot(2).z, 0, false)
-				FlyS = 20
+				FlyS = FlySF
 			end
 			FreezeEntityPosition(Player, true)
 			-- front
@@ -791,6 +986,10 @@ Citizen.CreateThread(function()
 				TaskCancel(0)
 				StopSound(-1)
 				RemoveParticleFxFromEntity(Player)
+				if IpA then
+					TriggerEvent('PowersMenu:FiTr')
+					TriggerEvent('PowersMenu:FiTr')
+				end
 				TaskStartScenarioInPlace(Player, 'WORLD_HUMAN_COP_IDLES', 0, false)
 			end
 			--back
@@ -810,6 +1009,10 @@ Citizen.CreateThread(function()
 				FreezeEntityPosition(Player, true)
 				TaskCancel(0)
 				RemoveParticleFxFromEntity(Player)
+				if IpA then
+					TriggerEvent('PowersMenu:FiTr')
+					TriggerEvent('PowersMenu:FiTr')
+				end
 				TaskStartScenarioInPlace(Player, 'WORLD_HUMAN_COP_IDLES', 0, false)
 			end
 			-- col
@@ -819,6 +1022,10 @@ Citizen.CreateThread(function()
 				SetEntityCoords(Player, GetEntityCoords(Player) - 0.5, 0.0, 0.0, 0.0, false)
 				lib.hideTextUI()
 				RemoveParticleFxFromEntity(Player)
+				if IpA then
+					TriggerEvent('PowersMenu:FiTr')
+					TriggerEvent('PowersMenu:FiTr')
+				end
 				TaskCancel(0)
 				PlaySoundFromEntity(-1, "1st_Person_Transition", Player, "PLAYER_SWITCH_CUSTOM_SOUNDSET", true, 0)
 				TaskStartScenarioInPlace(Player, 'CODE_HUMAN_MEDIC_TEND_TO_DEAD', 0, false)
@@ -849,6 +1056,7 @@ Citizen.CreateThread(function()
 		if SuS then
 		SetPedMoveRateOverride(PlayerId(),10.0)
 		SetRunSprintMultiplierForPlayer(PlayerId(), 1.49)
+		RestorePlayerStamina(PlayerId(), 1.0)
 		else
 		end
 		if explb then
