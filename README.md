@@ -3,7 +3,7 @@ A fantastic panel that allow you to have super powers (permission system)
 
 # Preview
 
-https://www.youtube.com/embed/uIJhhvvKCS0
+https://www.youtube.com/watch?v=uIJhhvvKCS0
 
 # FEATURES
 
