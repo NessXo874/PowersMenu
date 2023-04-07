@@ -1,6 +1,10 @@
 # PowersMenu
 A fantastic panel that allow you to have super powers (permission system)
 
+# Preview
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/uIJhhvvKCS0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
 # FEATURES
 
 - Invincibility
