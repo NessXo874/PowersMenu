@@ -9,7 +9,7 @@ A fantastic panel that allow you to have super powers (permission system)
 
 - Invincibility
 - No ragdoll
-- Jedi Force (not from me)
+- Jedi Force (not from me, Original : https://forum.cfx.re/t/release-the-force/991627) 
 - Force field
 - Magnet mode
 - Super strength
